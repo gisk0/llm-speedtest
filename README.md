@@ -29,7 +29,7 @@ Type `/ping` in your OpenClaw chat. Results appear in ~3 seconds:
 ⚡ Model Latency — 14:32
 
 🟢 Gemini        412ms
-🟢 GPT-4o        623ms
+🟢 GPT-5 Mini        623ms
 🟢 Sonnet        891ms
 🟡 Grok         2104ms
 🟡 MiniMax      3210ms
@@ -62,10 +62,10 @@ All requests run in parallel, so total wait time = slowest provider (typically 2
 |----------|-------|-----------------|
 | Anthropic | Claude Sonnet 4.6 | Most popular Claude model |
 | Anthropic | Claude Opus 4.6 | Flagship, often slower |
-| OpenAI | GPT-4o-mini | Cheapest & fastest OpenAI |
+| OpenAI | GPT-5 Mini | Cheapest & fastest OpenAI |
 | Google | Gemini 2.5 Flash | Fastest Gemini variant |
-| MiniMax | MiniMax-M1 | Fast alternative provider |
-| xAI | Grok 3 Mini Fast | Fastest Grok variant |
+| MiniMax | MiniMax-M2.5 | Fast alternative provider |
+| xAI | Grok 4 Fast | Fastest Grok variant |
 
 All providers are **optional** — the script skips any provider where no API key is found.
 

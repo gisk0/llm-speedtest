@@ -35,7 +35,7 @@ if [[ -n "$MINIMAX_KEY" ]]; then
   (ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
     -X POST "https://api.minimax.chat/v1/text/chatcompletion_v2" \
     -H "Authorization: Bearer $MINIMAX_KEY" -H "Content-Type: application/json" \
-    -d '{"model":"MiniMax-M1","messages":[{"role":"user","content":"hi"}],"max_tokens":1}')
+    -d '{"model":"MiniMax-M2.5","messages":[{"role":"user","content":"hi"}],"max_tokens":1}')
   echo "$(echo "$ms * 1000" | bc -l | cut -d. -f1)|MiniMax" > "$TMPDIR/minimax") &
 fi
 
@@ -43,7 +43,7 @@ if [[ -n "$XAI_KEY" ]]; then
   (ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
     -X POST "https://api.x.ai/v1/chat/completions" \
     -H "Authorization: Bearer $XAI_KEY" -H "Content-Type: application/json" \
-    -d '{"model":"grok-3-mini-fast","messages":[{"role":"user","content":"hi"}],"max_tokens":1}')
+    -d '{"model":"grok-4-fast-non-reasoning","messages":[{"role":"user","content":"hi"}],"max_tokens":1}')
   echo "$(echo "$ms * 1000" | bc -l | cut -d. -f1)|Grok" > "$TMPDIR/grok") &
 fi
 
@@ -51,8 +51,8 @@ if [[ -n "$OPENAI_KEY" ]]; then
   (ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
     -X POST "https://api.openai.com/v1/chat/completions" \
     -H "Authorization: Bearer $OPENAI_KEY" -H "Content-Type: application/json" \
-    -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"hi"}],"max_tokens":1}')
-  echo "$(echo "$ms * 1000" | bc -l | cut -d. -f1)|GPT-4o" > "$TMPDIR/gpt4o") &
+    -d '{"model":"gpt-5-mini","messages":[{"role":"user","content":"hi"}],"max_tokens":1}')
+  echo "$(echo "$ms * 1000" | bc -l | cut -d. -f1)|GPT-5" > "$TMPDIR/gpt4o") &
 fi
 
 wait

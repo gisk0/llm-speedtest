@@ -70,7 +70,7 @@ _real API latency (TTFT)_
 | Anthropic | Claude Sonnet 4.6 |
 | Anthropic | Claude Opus 4.6 |
 | OpenAI | GPT-5 Mini |
-| Google | Gemini 2.5 Flash |
+| Google | Gemini 3.1 Pro |
 | MiniMax | MiniMax-M2.5 |
 | xAI | Grok 4 Fast |
 

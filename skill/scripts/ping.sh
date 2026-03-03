@@ -25,7 +25,7 @@ fi
 
 if [[ -n "$GEMINI_KEY" ]]; then
   (ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
-    -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$GEMINI_KEY" \
+    -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=$GEMINI_KEY" \
     -H "Content-Type: application/json" \
     -d '{"contents":[{"parts":[{"text":"hi"}]}],"generationConfig":{"maxOutputTokens":1}}')
   echo "$(echo "$ms * 1000" | bc -l | cut -d. -f1)|Gemini" > "$TMPDIR/gemini") &

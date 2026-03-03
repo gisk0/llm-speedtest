@@ -69,11 +69,17 @@ jobs:
           if whitelisted:
               print(f"ℹ️  {whitelisted} whitelisted findings (credential_access ≤ MEDIUM)")
 
+          # Check aggregate risk level per skill
+          for report in data.get("reports", []):
+              risk = report.get("risk_level", "").upper()
+              if risk in ("HIGH", "CRITICAL"):
+                  blockers.append(f"[{risk}] Aggregate risk score: {report.get('risk_score', '?')} for '{report.get('name', '?')}'")
+
           if blockers:
-              print(f"\n❌ SkillGuard: {len(blockers)} non-whitelisted findings — failing CI:")
+              print(f"\n❌ SkillGuard: {len(blockers)} blocking issues — failing CI:")
               for b in blockers:
                   print(f"  {b}")
               sys.exit(1)
           else:
-              print("✅ SkillGuard passed — all findings are whitelisted FPs")
+              print("✅ SkillGuard passed — no HIGH/CRITICAL findings or aggregate risk")
           PYEOF

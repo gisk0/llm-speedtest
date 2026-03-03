@@ -60,8 +60,8 @@ All requests run in parallel, so total wait time = slowest provider (typically 2
 
 | Provider | Model | Why this model? |
 |----------|-------|-----------------|
-| Anthropic | Claude Sonnet 4 | Most popular Claude model |
-| Anthropic | Claude Opus 4 | Flagship, often slower |
+| Anthropic | Claude Sonnet 4.6 | Most popular Claude model |
+| Anthropic | Claude Opus 4.6 | Flagship, often slower |
 | OpenAI | GPT-4o-mini | Cheapest & fastest OpenAI |
 | Google | Gemini 2.5 Flash | Fastest Gemini variant |
 | MiniMax | MiniMax-M1 | Fast alternative provider |

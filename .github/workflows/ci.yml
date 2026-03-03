@@ -27,7 +27,40 @@ jobs:
           python-version: "3.12"
       - name: Run SkillGuard scan
         run: |
-          python3 scripts/skillguard.py --skills-dir . --skill skill 2>&1 || true
-          echo ""
-          echo "Note: MEDIUM credential_access findings are expected — this skill"
-          echo "legitimately reads API keys to ping LLM providers."
+          mkdir -p /tmp/skillguard
+          python3 scripts/skillguard.py \
+            --skills-dir . \
+            --skill skill \
+            --json-out /tmp/skillguard/results.json 2>&1 || true
+
+          # Parse results: fail only on HIGH/CRITICAL severity findings
+          # that are NOT expected false positives
+          python3 - <<'PYEOF'
+          import json, sys
+
+          with open("/tmp/skillguard/results.json") as f:
+              data = json.load(f)
+
+          # Expected FPs for this skill (legitimately reads API keys)
+          EXPECTED_FPS = {"credential_access"}
+
+          blockers = []
+          for report in data.get("reports", []):
+              for finding in report.get("findings", []):
+                  severity = finding.get("severity", "").upper()
+                  check = finding.get("check", "")
+                  if severity in ("HIGH", "CRITICAL") and check not in EXPECTED_FPS:
+                      blockers.append(
+                          f"  [{severity}] {check}: {finding.get('file', '?')}:{finding.get('line', '?')}"
+                          f" — {finding.get('detail', '')}"
+                      )
+
+          if blockers:
+              print("❌ SkillGuard found blocking issues:")
+              for b in blockers:
+                  print(b)
+              sys.exit(1)
+          else:
+              print("✅ SkillGuard passed — no HIGH/CRITICAL findings")
+              print("   (MEDIUM credential_access findings are expected FPs for this skill)")
+          PYEOF

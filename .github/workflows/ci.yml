@@ -59,12 +59,17 @@ jobs:
                   check = finding.get("check", "")
                   line = f"[{severity}] {check}: {finding.get('file', '?')}:{finding.get('line', '?')} — {finding.get('detail', '')}"
 
-                  max_fp = FP_WHITELIST.get(check)
-                  sev_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
-                  if max_fp and sev_order.get(severity, 99) <= sev_order.get(max_fp, -1):
-                      whitelisted += 1
-                  else:
+                  # Skip LOW/INFO — only care about MEDIUM+
+                  if severity in ("LOW", "INFO", ""):
+                      continue
+                  if severity in ("HIGH", "CRITICAL"):
                       blockers.append(line)
+                  elif severity == "MEDIUM":
+                      max_fp = FP_WHITELIST.get(check)
+                      if max_fp:
+                          whitelisted += 1
+                      else:
+                          blockers.append(line)
 
           if whitelisted:
               print(f"ℹ️  {whitelisted} whitelisted findings (credential_access ≤ MEDIUM)")

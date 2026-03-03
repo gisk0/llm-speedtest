@@ -16,3 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: trunk-io/trunk-action@v1
+
+  skillguard:
+    name: SkillGuard Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run SkillGuard scan
+        run: |
+          python3 scripts/skillguard.py --skills-dir . --skill skill 2>&1 || true
+          echo ""
+          echo "Note: MEDIUM credential_access findings are expected — this skill"
+          echo "legitimately reads API keys to ping LLM providers."

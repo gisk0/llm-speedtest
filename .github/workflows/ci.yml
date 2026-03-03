@@ -22,19 +22,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gisk0/skillguard-scanner
+          path: .skillguard
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Run SkillGuard scan
         run: |
           mkdir -p /tmp/skillguard
-          python3 scripts/skillguard.py \
+          python3 .skillguard/scripts/scanner.py \
             --skills-dir . \
             --skill skill \
             --json-out /tmp/skillguard/results.json 2>&1 || true
 
-          # Parse results: fail only on HIGH/CRITICAL severity findings
-          # that are NOT expected false positives
+          # Only fail on HIGH/CRITICAL findings that aren't expected FPs
           python3 - <<'PYEOF'
           import json, sys
 
@@ -62,5 +65,5 @@ jobs:
               sys.exit(1)
           else:
               print("✅ SkillGuard passed — no HIGH/CRITICAL findings")
-              print("   (MEDIUM credential_access findings are expected FPs for this skill)")
+              print("   (MEDIUM credential_access findings are expected FPs)")
           PYEOF

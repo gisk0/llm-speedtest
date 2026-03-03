@@ -44,34 +44,36 @@ jobs:
           with open("/tmp/skillguard/results.json") as f:
               data = json.load(f)
 
-          # Expected MEDIUM-only FPs (legitimate API key access)
-          MEDIUM_FP_WHITELIST = {"credential_access"}
+          # Whitelist: known false positives (check_name: max_severity)
+          # This skill legitimately reads API keys to ping providers
+          FP_WHITELIST = {
+              "credential_access": "MEDIUM",
+          }
 
           blockers = []
-          warnings = []
+          whitelisted = 0
           for report in data.get("reports", []):
+              risk = report.get("risk_level", "").upper()
               for finding in report.get("findings", []):
                   severity = finding.get("severity", "").upper()
                   check = finding.get("check", "")
                   line = f"[{severity}] {check}: {finding.get('file', '?')}:{finding.get('line', '?')} — {finding.get('detail', '')}"
 
-                  if severity in ("HIGH", "CRITICAL"):
-                      # Always block on HIGH/CRITICAL — no exceptions
+                  max_fp = FP_WHITELIST.get(check)
+                  sev_order = {"LOW": 0, "MEDIUM": 1, "HIGH": 2, "CRITICAL": 3}
+                  if max_fp and sev_order.get(severity, 99) <= sev_order.get(max_fp, -1):
+                      whitelisted += 1
+                  else:
                       blockers.append(line)
-                  elif severity == "MEDIUM" and check not in MEDIUM_FP_WHITELIST:
-                      warnings.append(line)
 
-          if warnings:
-              print(f"⚠️  {len(warnings)} unexpected MEDIUM findings:")
-              for w in warnings:
-                  print(f"  {w}")
-              print()
+          if whitelisted:
+              print(f"ℹ️  {whitelisted} whitelisted findings (credential_access ≤ MEDIUM)")
 
           if blockers:
-              print(f"❌ SkillGuard: {len(blockers)} HIGH/CRITICAL findings — failing CI:")
+              print(f"\n❌ SkillGuard: {len(blockers)} non-whitelisted findings — failing CI:")
               for b in blockers:
                   print(f"  {b}")
               sys.exit(1)
           else:
-              print("✅ SkillGuard passed — no HIGH/CRITICAL findings")
+              print("✅ SkillGuard passed — all findings are whitelisted FPs")
           PYEOF

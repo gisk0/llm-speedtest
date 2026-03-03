@@ -12,20 +12,20 @@ LLM latency varies wildly throughout the day. Sometimes Sonnet responds in under
 
 ```bash
 clawhub install llm-speedtest
-```
+```bash
 
 Or clone manually into your OpenClaw skills directory:
 
 ```bash
 git clone https://github.com/gisk0/llm-speedtest.git
 cp -r llm-speedtest/skill/ ~/.openclaw/workspace/skills/llm-speedtest/
-```
+```bash
 
 ## Usage
 
 Type `/ping` in your OpenClaw chat. Results appear in ~3 seconds:
 
-```
+```text
 ⚡ Model Latency — 14:32
 
 🟢 Gemini        412ms
@@ -36,7 +36,7 @@ Type `/ping` in your OpenClaw chat. Results appear in ~3 seconds:
 🟡 Opus         4102ms
 
 real API latency (TTFT)
-```
+```bash
 
 ### What the badges mean
 
@@ -75,13 +75,13 @@ All providers are **optional** — the script skips any provider where no API ke
 
 The script reads keys from [`pass`](https://www.passwordstore.org/):
 
-```
+```bash
 pass shared/anthropic/api-key
 pass shared/openai/api-key
 pass shared/gemini/api-key
 pass shared/minimax/api-key
 pass shared/xai/api-key
-```
+```bash
 
 ### Option B: Using environment variables
 
@@ -93,7 +93,7 @@ GEMINI_KEY="${GEMINI_API_KEY:-}"
 MINIMAX_KEY="${MINIMAX_API_KEY:-}"
 XAI_KEY="${XAI_API_KEY:-}"
 OPENAI_KEY="${OPENAI_API_KEY:-}"
-```
+```bash
 
 Then export your keys in your shell or `.env` file.
 

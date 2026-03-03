@@ -50,7 +50,8 @@ Results are sorted fastest-to-slowest with color badges:
 - ⚫ **30s** — Timeout
 
 Example:
-```
+
+```text
 ⚡ Model Latency — 14:32
 
 🟢 `Gemini       412ms`

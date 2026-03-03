@@ -44,26 +44,34 @@ jobs:
           with open("/tmp/skillguard/results.json") as f:
               data = json.load(f)
 
-          # Expected FPs for this skill (legitimately reads API keys)
-          EXPECTED_FPS = {"credential_access"}
+          # Expected MEDIUM-only FPs (legitimate API key access)
+          MEDIUM_FP_WHITELIST = {"credential_access"}
 
           blockers = []
+          warnings = []
           for report in data.get("reports", []):
               for finding in report.get("findings", []):
                   severity = finding.get("severity", "").upper()
                   check = finding.get("check", "")
-                  if severity in ("HIGH", "CRITICAL") and check not in EXPECTED_FPS:
-                      blockers.append(
-                          f"  [{severity}] {check}: {finding.get('file', '?')}:{finding.get('line', '?')}"
-                          f" — {finding.get('detail', '')}"
-                      )
+                  line = f"[{severity}] {check}: {finding.get('file', '?')}:{finding.get('line', '?')} — {finding.get('detail', '')}"
+
+                  if severity in ("HIGH", "CRITICAL"):
+                      # Always block on HIGH/CRITICAL — no exceptions
+                      blockers.append(line)
+                  elif severity == "MEDIUM" and check not in MEDIUM_FP_WHITELIST:
+                      warnings.append(line)
+
+          if warnings:
+              print(f"⚠️  {len(warnings)} unexpected MEDIUM findings:")
+              for w in warnings:
+                  print(f"  {w}")
+              print()
 
           if blockers:
-              print("❌ SkillGuard found blocking issues:")
+              print(f"❌ SkillGuard: {len(blockers)} HIGH/CRITICAL findings — failing CI:")
               for b in blockers:
-                  print(b)
+                  print(f"  {b}")
               sys.exit(1)
           else:
               print("✅ SkillGuard passed — no HIGH/CRITICAL findings")
-              print("   (MEDIUM credential_access findings are expected FPs)")
           PYEOF

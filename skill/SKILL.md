@@ -17,6 +17,7 @@ openclaw:
       - GEMINI_API_KEY (optional)
       - MINIMAX_API_KEY (optional)
       - XAI_API_KEY (optional)
+      - SPEEDTEST_PROVIDERS (optional, default: all)
 author:
   name: chapati23
 ---
@@ -78,6 +79,20 @@ _real API latency (TTFT)_
 ## Cost
 
 ~$0.0001 per run (1 token per model, cheapest tiers).
+
+## Configuration
+
+Set `SPEEDTEST_PROVIDERS` (env var or exported in your shell) to control which providers are pinged:
+
+```bash
+# Anthropic only
+export SPEEDTEST_PROVIDERS=anthropic
+
+# Anthropic + OpenAI
+export SPEEDTEST_PROVIDERS=anthropic,openai
+```
+
+Valid values: `anthropic`, `openai`, `gemini`, `minimax`, `xai`. Defaults to all providers.
 
 ## Note
 

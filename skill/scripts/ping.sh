@@ -3,10 +3,11 @@
 # shellcheck disable=SC2312
 
 ANTHROPIC_KEY=$(pass shared/anthropic/api-key 2>/dev/null)
-GEMINI_KEY=$(pass shared/gemini/api-key 2>/dev/null)
-MINIMAX_KEY=$(pass shared/minimax/api-key 2>/dev/null)
-XAI_KEY=$(pass shared/xai/api-key 2>/dev/null)
-OPENAI_KEY=$(pass shared/openai/api-key 2>/dev/null)
+# Disabled: only monitoring Anthropic models
+# GEMINI_KEY=$(pass shared/gemini/api-key 2>/dev/null)
+# MINIMAX_KEY=$(pass shared/minimax/api-key 2>/dev/null)
+# XAI_KEY=$(pass shared/xai/api-key 2>/dev/null)
+# OPENAI_KEY=$(pass shared/openai/api-key 2>/dev/null)
 
 TMPDIR=$(mktemp -d)
 
@@ -28,7 +29,7 @@ if [[ -n ${ANTHROPIC_KEY} ]]; then
 	) &
 fi
 
-if [[ -n ${GEMINI_KEY} ]]; then
+if false && [[ -n ${GEMINI_KEY} ]]; then
 	(
 		ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
 			-X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${GEMINI_KEY}" \
@@ -38,7 +39,7 @@ if [[ -n ${GEMINI_KEY} ]]; then
 	) &
 fi
 
-if [[ -n ${MINIMAX_KEY} ]]; then
+if false && [[ -n ${MINIMAX_KEY} ]]; then
 	(
 		ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
 			-X POST "https://api.minimax.chat/v1/text/chatcompletion_v2" \
@@ -48,7 +49,7 @@ if [[ -n ${MINIMAX_KEY} ]]; then
 	) &
 fi
 
-if [[ -n ${XAI_KEY} ]]; then
+if false && [[ -n ${XAI_KEY} ]]; then
 	(
 		ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
 			-X POST "https://api.x.ai/v1/chat/completions" \
@@ -58,7 +59,7 @@ if [[ -n ${XAI_KEY} ]]; then
 	) &
 fi
 
-if [[ -n ${OPENAI_KEY} ]]; then
+if false && [[ -n ${OPENAI_KEY} ]]; then
 	(
 		ms=$(curl -s -o /dev/null -w "%{time_total}" --max-time 30 \
 			-X POST "https://api.openai.com/v1/chat/completions" \
